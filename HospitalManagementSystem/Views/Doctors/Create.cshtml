@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Add New Doctor";
+    var departments = ViewBag.Departments as List<HospitalManagementSystem.Models.Department> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-person-plus-fill text-primary"></i> Register New Specialist Doctor</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Directory</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2">1. Doctor User Credentials</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Doctor Full Name</label>
+                        <input type="text" name="fullName" class="form-control" placeholder="Dr. Jane Watson" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Work Email (Login ID)</label>
+                        <input type="email" name="email" class="form-control" placeholder="doctor.jane@hospital.com" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Initial Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Contact Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="+1 (555) 000-0000" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Select Doctor Avatar</label>
+                    <div class="avatar-selector">
+                        <img src="/images/avatars/doctor1.svg" class="avatar-option selected" data-avatar="/images/avatars/doctor1.svg" />
+                        <img src="/images/avatars/doctor2.svg" class="avatar-option" data-avatar="/images/avatars/doctor2.svg" />
+                        <img src="/images/avatars/admin.svg" class="avatar-option" data-avatar="/images/avatars/admin.svg" />
+                    </div>
+                    <input type="hidden" name="profilePicture" id="selectedAvatarInput" value="/images/avatars/doctor1.svg" />
+                </div>
+
+                <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2 mt-4">2. Professional &amp; Consultation Information</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Department</label>
+                        <select name="departmentId" class="form-select" required>
+                            @foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id">@dept.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Specialization</label>
+                        <input type="text" name="specialization" class="form-control" placeholder="e.g. Interventional Cardiologist" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Qualification</label>
+                        <input type="text" name="qualification" class="form-control" placeholder="MBBS, MD, FACC" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Years of Experience</label>
+                        <input type="number" name="experienceYears" class="form-control" value="5" min="0" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Consultation Fee (₹)</label>
+                        <input type="number" step="0.01" name="consultationFee" class="form-control" value="75.00" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Consulting Room</label>
+                        <input type="text" name="roomNumber" class="form-control" placeholder="Room 205" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Available Days</label>
+                        <input type="text" name="availableDays" class="form-control" value="Mon, Wed, Fri" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Consulting Hours</label>
+                        <input type="text" name="availableTimeSlot" class="form-control" value="09:00 AM - 01:00 PM" />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Save Doctor Record
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,104 @@
+@model IEnumerable<HospitalManagementSystem.Models.Ward>
+@{
+    ViewData["Title"] = "Ward & Bed Management (Warden)";
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Ward &amp; Bed Management (Warden Module)</h4>
+            <p class="text-muted small mb-0">Live hospital bed grid, ward occupancy, sanitation and capacity tracking</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (User.IsInRole("Admin") || User.IsInRole("Warden"))
+            {
+                <a asp-action="CreateWard" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-building-add"></i> Create New Ward
+                </a>
+            }
+            <a asp-action="Admit" class="btn btn-primary-custom btn-sm">
+                <i class="bi bi-door-open"></i> Admit Patient
+            </a>
+            <a asp-action="Admissions" class="btn btn-outline-custom btn-sm">
+                <i class="bi bi-list-check"></i> View Admissions
+            </a>
+        </div>
+    </div>
+
+    <!-- Live Bed Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="stat-card">
+                <div class="stat-icon primary"><i class="bi bi-hospital"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Total Beds</div>
+                    <div class="h3 fw-bold text-dark mb-0">@ViewBag.TotalBeds</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="stat-card">
+                <div class="stat-icon warning"><i class="bi bi-person-x"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Occupied Beds</div>
+                    <div class="h3 fw-bold text-danger mb-0">@ViewBag.OccupiedBeds</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="stat-card">
+                <div class="stat-icon success"><i class="bi bi-check-circle"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Available Beds</div>
+                    <div class="h3 fw-bold text-success mb-0">@ViewBag.AvailableBeds</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ward Cards with Bed Matrix -->
+    @foreach (var ward in Model)
+    {
+        var occupiedCount = ward.Beds.Count(b => b.IsOccupied);
+        var availableCount = ward.Beds.Count - occupiedCount;
+
+        <div class="card-modern mb-4">
+            <div class="card-header-modern bg-light">
+                <div>
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-door-closed text-primary me-2"></i>@ward.WardName
+                        <span class="badge bg-secondary ms-2 small">@ward.WardType</span>
+                    </h5>
+                    <div class="text-muted small mt-1">
+                        Location: @ward.FloorLocation &bull; Warden: @ward.WardenInCharge &bull; Daily Fee: ₹@ward.DailyCharge
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-success">@availableCount Free</span>
+                    <span class="badge bg-danger">@occupiedCount In Use</span>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="bed-grid">
+                    @foreach (var bed in ward.Beds)
+                    {
+                        <div class="bed-card @(bed.IsOccupied ? "occupied" : "available")">
+                            <i class="bi @(bed.IsOccupied ? "bi-person-fill text-danger" : "bi-check-circle-fill text-success") fs-4"></i>
+                            <div class="fw-bold text-dark mt-1">@bed.BedNumber</div>
+                            <span class="badge @(bed.IsOccupied ? "bg-danger" : "bg-success") mt-1" style="font-size: 0.7rem;">
+                                @(bed.IsOccupied ? "Occupied" : "Available")
+                            </span>
+                            @if (!bed.IsOccupied)
+                            {
+                                <div class="mt-2">
+                                    <a asp-action="Admit" asp-route-bedId="@bed.Id" class="btn btn-xs btn-outline-success py-0 px-2" style="font-size: 0.72rem;">Admit</a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

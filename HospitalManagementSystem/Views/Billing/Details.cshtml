@@ -1,0 +1,110 @@
+@model HospitalManagementSystem.Models.Invoice
+@{
+    ViewData["Title"] = "Invoice Receipt - " + Model.InvoiceNumber;
+    var balance = Model.TotalAmount - Model.PaidAmount;
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center mb-3 d-print-none">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Invoices</a>
+        <div class="d-flex gap-2">
+            @if (Model.PaymentStatus != "Paid")
+            {
+                <button type="button" class="btn btn-success btn-sm" onclick="payInvoice(@Model.Id, @Model.TotalAmount, @Model.PaidAmount)">
+                    <i class="bi bi-credit-card"></i> Process Payment
+                </button>
+            }
+            <button onclick="window.print()" class="btn btn-primary-custom btn-sm"><i class="bi bi-printer"></i> Print Receipt</button>
+        </div>
+    </div>
+
+    <!-- Official Invoice Paper -->
+    <div class="card-modern p-5 max-w-800 mx-auto bg-white shadow" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-start pb-4 border-bottom">
+            <div>
+                <img src="~/images/hospital-logo.webp" alt="Sahyadri Hospital Logo" height="68" style="object-fit: contain; max-width: 250px;" />
+                <div class="text-muted small mt-2">
+                    Plot No. 30-C, Erandwane, Karve Road<br />
+                    Pune - 411004, Maharashtra, India<br />
+                    GSTIN: 27AABCS1234F1Z8 &bull; Phone: +91 20 6721 5000
+                </div>
+            </div>
+            <div class="text-end">
+                <h3 class="fw-bold text-dark mb-0">INVOICE</h3>
+                <div class="text-primary fw-bold fs-5">@Model.InvoiceNumber</div>
+                <div class="text-muted small mt-1">Date: @Model.InvoiceDate.ToString("MMM dd, yyyy")</div>
+                <span class="badge fs-6 mt-1 @(Model.PaymentStatus == "Paid" ? "bg-success" : "bg-danger")">
+                    @Model.PaymentStatus
+                </span>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="col-sm-6">
+                <span class="text-muted small text-uppercase fw-bold">Billed To:</span>
+                <div class="h5 fw-bold text-dark mt-1 mb-1">@(Model.Patient?.FullName)</div>
+                <div class="small text-muted">Patient Code: @Model.Patient?.PatientCode</div>
+                <div class="small text-muted">Phone: @Model.Patient?.Phone</div>
+                <div class="small text-muted">Address: @Model.Patient?.Address</div>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+                <span class="text-muted small text-uppercase fw-bold">Payment Method:</span>
+                <div class="fw-bold text-dark mt-1">@Model.PaymentMethod</div>
+            </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="table-responsive my-4">
+            <table class="table border">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Item Description</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@Model.Description</div>
+                            @if (Model.Appointment != null)
+                            {
+                                <small class="text-muted">Doctor Consultation with Dr. @(Model.Appointment.Doctor?.User?.FullName)</small>
+                            }
+                            @if (Model.BedAdmission != null)
+                            {
+                                <small class="text-muted">Ward Stay: @Model.BedAdmission.Bed?.Ward?.WardName (@Model.BedAdmission.Bed?.BedNumber)</small>
+                            }
+                        </td>
+                        <td class="text-end fw-bold">₹@Model.TotalAmount.ToString("F2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="row justify-content-end">
+            <div class="col-sm-6">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <td class="text-muted">Subtotal:</td>
+                        <td class="text-end fw-semibold">₹@Model.TotalAmount.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Paid to Date:</td>
+                        <td class="text-end text-success fw-bold">-₹@Model.PaidAmount.ToString("F2")</td>
+                    </tr>
+                    <tr class="border-top border-2">
+                        <td class="fw-bold fs-5">Balance Due:</td>
+                        <td class="text-end fw-bold fs-5 @(balance > 0 ? "text-danger" : "text-muted")">₹@balance.ToString("F2")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-top pt-4 mt-4 text-center text-muted small">
+            Thank you for choosing Sahyadri Super Speciality Hospital, Pune. Wishing you a speedy recovery!
+        </div>
+    </div>
+</div>
+

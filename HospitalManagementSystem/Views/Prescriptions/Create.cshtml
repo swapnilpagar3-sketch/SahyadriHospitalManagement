@@ -1,0 +1,81 @@
+@model HospitalManagementSystem.Models.Prescription
+@{
+    ViewData["Title"] = "Write Prescription";
+    var patients = ViewBag.Patients as List<HospitalManagementSystem.Models.Patient> ?? new();
+    var doctors = ViewBag.Doctors as List<HospitalManagementSystem.Models.Doctor> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-file-medical text-primary"></i> Issue Clinical Prescription</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="AppointmentId" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PatientId" class="form-label small fw-bold">Select Patient</label>
+                        <select asp-for="PatientId" class="form-select" required>
+                            <option value="">-- Choose Patient --</option>
+                            @foreach (var pat in patients)
+                            {
+                                <option value="@pat.Id" selected="@(Model.PatientId == pat.Id)">
+                                    @pat.FullName (@pat.PatientCode) &bull; Allergies: @pat.Allergies
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DoctorId" class="form-label small fw-bold">Prescribing Doctor</label>
+                        <select asp-for="DoctorId" class="form-select" required>
+                            @foreach (var doc in doctors)
+                            {
+                                <option value="@doc.Id" selected="@(Model.DoctorId == doc.Id || ViewBag.CurrentDoctorId == doc.Id)">
+                                    @(doc.User?.FullName ?? "Doctor") (@doc.Specialization)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Diagnosis" class="form-label small fw-bold">Clinical Diagnosis</label>
+                    <input asp-for="Diagnosis" class="form-control" placeholder="e.g. Acute Bronchitis, Essential Hypertension" required />
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label asp-for="Medicines" class="form-label small fw-bold mb-0">Prescribed Medications (Rx)</label>
+                        <span class="text-muted small">Specify Medicine name, dosage, frequency, and duration</span>
+                    </div>
+                    <textarea asp-for="Medicines" class="form-control font-monospace" rows="6" placeholder="• Amoxicillin 500mg - 1 capsule every 8 hours for 7 days
+• Paracetamol 650mg - 1 tablet SOS if fever > 100°F
+• Cetirizine 10mg - 1 tablet before bedtime for 5 days" required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label asp-for="AdviceInstructions" class="form-label small fw-bold">Dietary &amp; General Advice</label>
+                        <input asp-for="AdviceInstructions" class="form-control" placeholder="Rest for 3 days, drink warm fluids, avoid dairy" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="FollowUpDate" class="form-label small fw-bold">Follow-Up Date</label>
+                        <input asp-for="FollowUpDate" type="date" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Issue &amp; Generate Prescription
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

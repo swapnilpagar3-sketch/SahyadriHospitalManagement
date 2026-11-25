@@ -1,0 +1,47 @@
+@model HospitalManagementSystem.Models.Department
+@{
+    ViewData["Title"] = "Add Department";
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 650px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-building-add text-primary"></i> Create Medical Department</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label small fw-bold">Department Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g. Oncology, Radiology" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label small fw-bold">Department Scope / Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Clinical care overview..." required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Location" class="form-label small fw-bold">Location / Building Wing</label>
+                        <input asp-for="Location" class="form-control" placeholder="Wing C, 2nd Floor" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="HeadOfDepartment" class="form-label small fw-bold">Head of Department (HOD)</label>
+                        <input asp-for="HeadOfDepartment" class="form-control" placeholder="Dr. Gregory House" required />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Save Department
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

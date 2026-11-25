@@ -1,0 +1,69 @@
+@model HospitalManagementSystem.Models.Ward
+@{
+    ViewData["Title"] = "Create New Ward";
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 700px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-building-add text-primary"></i> Create Hospital Ward</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Wards</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="CreateWard" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="WardName" class="form-label small fw-bold">Ward Name</label>
+                        <input asp-for="WardName" class="form-control" placeholder="e.g. Neonatal Intensive Care" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="WardType" class="form-label small fw-bold">Ward Category</label>
+                        <select asp-for="WardType" class="form-select" required>
+                            <option value="General">General</option>
+                            <option value="Semi-Private">Semi-Private</option>
+                            <option value="Private">Private</option>
+                            <option value="ICU">ICU</option>
+                            <option value="Emergency">Emergency</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Capacity" class="form-label small fw-bold">Bed Capacity</label>
+                        <input asp-for="Capacity" type="number" class="form-control" value="8" min="1" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="DailyCharge" class="form-label small fw-bold">Daily Bed Charge (₹)</label>
+                        <input asp-for="DailyCharge" type="number" step="0.01" class="form-control" value="120.00" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small fw-bold">Initial Beds to Generate</label>
+                        <input type="number" name="initialBedCount" class="form-control" value="8" min="1" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="WardenInCharge" class="form-label small fw-bold">Warden In-Charge</label>
+                        <input asp-for="WardenInCharge" class="form-control" placeholder="John Miller" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FloorLocation" class="form-label small fw-bold">Floor / Wing</label>
+                        <input asp-for="FloorLocation" class="form-control" placeholder="Block B, 3rd Floor" required />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Create Ward &amp; Generate Beds
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

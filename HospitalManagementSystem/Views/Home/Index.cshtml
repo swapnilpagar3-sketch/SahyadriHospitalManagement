@@ -1,0 +1,194 @@
+@{
+    ViewData["Title"] = "Sahyadri Super Speciality Hospital, Pune";
+    var doctors = ViewBag.Doctors as List<HospitalManagementSystem.Models.Doctor> ?? new();
+    var departments = ViewBag.Departments as List<HospitalManagementSystem.Models.Department> ?? new();
+}
+
+<!-- Hero Section with Indian Hospital Aesthetic -->
+<section class="py-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdfa 0%, #fff7ed 50%, #e0f2fe 100%); border-bottom: 1px solid #fed7aa;">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge bg-teal text-white px-3 py-2 shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i> NABH &amp; NABL Accredited Facility
+                    </span>
+                    <span class="badge bg-saffron text-white px-3 py-2 shadow-sm">
+                        <i class="bi bi-award-fill me-1"></i> Maharashtra's Trusted Healthcare
+                    </span>
+                </div>
+                
+                <h1 class="display-4 fw-extrabold text-dark mb-3 lh-sm">
+                    Advanced Medical Care, <span style="color: #0f766e;">Compassionate</span> Hearts.
+                </h1>
+                
+                <p class="lead text-muted mb-4">
+                    <strong>Sahyadri Hospital</strong> integrates world-class clinical precision with next-generation electronic healthcare management. Connect with leading specialists across Pune, book real-time appointments, and manage patient care seamlessly.
+                </p>
+
+                <!-- Emergency Banner Pill -->
+                <div class="p-3 mb-4 rounded-4 shadow-sm d-flex align-items-center gap-3" style="background: #ffffff; border-left: 5px solid #dc2626;">
+                    <div class="rounded-circle bg-danger-subtle text-danger p-3 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-telephone-plus-fill fs-4 animate-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="small fw-bold text-danger text-uppercase" style="letter-spacing: 0.5px;">24x7 Emergency &amp; Ambulance Hotline</div>
+                        <div class="fw-extrabold fs-5 text-dark">
+                            Call <a href="tel:1066" class="text-danger text-decoration-none">1066</a> / <a href="tel:+912067215000" class="text-dark text-decoration-none">+91 20 6721 5000</a>
+                        </div>
+                        <div class="small text-muted">Erandwane, Hadapsar, Kothrud &amp; Nagar Road Units</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary-custom btn-lg shadow-sm">
+                        <i class="bi bi-calendar-plus me-1"></i> Register as Patient
+                    </a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-custom btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Staff &amp; Doctor Portal
+                    </a>
+                </div>
+            </div>
+
+            <!-- Indian Hospital Highlights Card -->
+            <div class="col-lg-5 text-center">
+                <div class="card-modern p-4 border-0 shadow-lg" style="border-top: 4px solid #ea580c !important;">
+                    <div class="text-start mb-3 pb-2 border-bottom">
+                        <span class="badge bg-warning-subtle text-dark border border-warning small mb-1">Centre of Excellence</span>
+                        <h5 class="fw-bold text-dark mb-0">Sahyadri Care Standards</h5>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3 text-start p-2 rounded-3 bg-light">
+                        <div class="stat-icon saffron"><i class="bi bi-heart-pulse-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Level-1 Trauma &amp; Cath Lab</h6>
+                            <small class="text-muted">Instant triage &amp; golden-hour cardiac ICU support</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3 text-start p-2 rounded-3 bg-light">
+                        <div class="stat-icon primary"><i class="bi bi-award-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Board-Certified Specialists</h6>
+                            <small class="text-muted">Cardiology, Neurology, Oncology, Orthopaedics</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3 text-start p-2 rounded-3 bg-light">
+                        <div class="stat-icon success"><i class="bi bi-file-earmark-medical-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">ABDM Digital Health Records</h6>
+                            <small class="text-muted">E-Prescriptions, vital charts &amp; transparent billing</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 text-start p-2 rounded-3 bg-light">
+                        <div class="stat-icon accent"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Ayushman Bharat &amp; Cashless TPA</h6>
+                            <small class="text-muted">PM-JAY, CGHS, MJPJAY &amp; corporate mediclaim</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Indian Health Schemes / Ayushman Bharat Banner -->
+<section id="ayushman" class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-3">
+                <span class="text-uppercase small fw-bold text-muted d-block">Public Health Welfare</span>
+                <h5 class="fw-bold text-dark mb-0">Empanelled Schemes &amp; TPA</h5>
+            </div>
+            <div class="col-lg-9">
+                <div class="d-flex flex-wrap align-items-center justify-content-lg-end gap-3">
+                    <div class="px-3 py-2 rounded-3 bg-light border d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span class="small fw-bold">Ayushman Bharat (PM-JAY)</span>
+                    </div>
+                    <div class="px-3 py-2 rounded-3 bg-light border d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span class="small fw-bold">MJPJAY (Maharashtra)</span>
+                    </div>
+                    <div class="px-3 py-2 rounded-3 bg-light border d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span class="small fw-bold">CGHS &amp; ECHS Empanelled</span>
+                    </div>
+                    <div class="px-3 py-2 rounded-3 bg-light border d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span class="small fw-bold">40+ Cashless TPA Insurers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Departments Section -->
+<section id="services" class="py-5" style="background-color: #fafbfc;">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="badge bg-teal-subtle text-teal fw-bold mb-2 px-3 py-1">CENTRE OF CLINICAL EXCELLENCE</span>
+            <h2 class="fw-bold text-dark">Our Medical Specialties &amp; Departments</h2>
+            <p class="text-muted mx-auto" style="max-width: 650px;">
+                State-of-the-art tertiary healthcare departments equipped with modern modular operating theatres, diagnostic imaging, and experienced superspecialists in Pune.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var dept in departments)
+            {
+                <div class="col-md-4">
+                    <div class="card-modern p-4 h-100 shadow-sm border-top border-4 border-teal">
+                        <div class="stat-icon primary mb-3">
+                            <i class="bi bi-hospital"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">@dept.Name</h5>
+                        <p class="text-muted small mb-3">@dept.Description</p>
+                        <div class="text-muted small mt-auto border-top pt-2 d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-geo-alt text-danger me-1"></i> @dept.Location</span>
+                            <span class="badge bg-light text-dark border">Pune Unit</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Doctors Directory Preview with Indian Currency (₹) -->
+<section id="doctors" class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="badge bg-saffron-subtle text-saffron fw-bold mb-2 px-3 py-1">EXPERT MEDICAL CAREGIVERS</span>
+            <h2 class="fw-bold text-dark">Meet Our Specialist Doctors</h2>
+            <p class="text-muted mx-auto" style="max-width: 650px;">
+                Experienced consultants, surgeons, and physicians providing patient-centric consultations and personalized treatments.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var doc in doctors)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-modern text-center p-4 h-100 shadow-sm border-top border-4 border-warning">
+                        <img src="@(doc.User?.ProfilePicture ?? "/images/avatars/doctor1.svg")" 
+                             class="rounded-circle mx-auto mb-3 border border-3 border-teal shadow-sm" 
+                             style="width: 86px; height: 86px; object-fit: cover;" 
+                             alt="@(doc.User?.FullName ?? "Doctor")" />
+                        <h6 class="fw-bold text-dark mb-1">@(doc.User?.FullName ?? "Doctor")</h6>
+                        <span class="badge bg-light text-teal border mb-2">@doc.Specialization</span>
+                        <div class="small text-muted mb-2">@doc.Qualification &bull; @doc.ExperienceYears yrs exp</div>
+                        <div class="small fw-bold text-success mb-3 fs-6">OPD Fee: ₹@doc.ConsultationFee</div>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-custom mt-auto w-100">
+                            <i class="bi bi-calendar-check me-1"></i> Book Visit
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

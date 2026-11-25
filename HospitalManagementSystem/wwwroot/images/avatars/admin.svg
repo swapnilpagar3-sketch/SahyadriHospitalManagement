@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bg)"/>
+  <circle cx="60" cy="45" r="22" fill="#e0f2fe"/>
+  <path d="M26 98 C28 72, 42 66, 60 66 C78 66, 92 72, 94 98 Z" fill="#e0f2fe"/>
+  <!-- Admin Key/Shield Badge -->
+  <circle cx="85" cy="85" r="16" fill="#f59e0b"/>
+  <path d="M85 75 L89 83 L81 83 Z M85 91 L85 85" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+</svg>
+

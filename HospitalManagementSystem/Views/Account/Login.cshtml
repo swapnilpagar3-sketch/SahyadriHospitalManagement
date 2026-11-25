@@ -1,0 +1,90 @@
+@model HospitalManagementSystem.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "_Layout";
+}
+
+<div class="auth-bg">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <img src="~/images/hospital-logo.webp" alt="Sahyadri Hospital Logo" height="75" style="object-fit: contain; max-width: 280px;" />
+            <h4 class="fw-bold text-dark mt-3 mb-1">Welcome to Sahyadri</h4>
+            <p class="text-muted small">Sahyadri Super Speciality Hospital Clinical Portal &bull; Pune</p>
+        </div>
+
+        <form asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label small fw-bold text-secondary">Work / Patient Email</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                    <input asp-for="Email" class="form-control" placeholder="name@hospital.com" id="loginEmail" required />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label asp-for="Password" class="form-label small fw-bold text-secondary">Password</label>
+                    <a asp-action="ForgotPassword" class="small text-decoration-none text-primary fw-semibold">Forgot Password?</a>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-muted"><i class="bi bi-shield-lock"></i></span>
+                    <input asp-for="Password" class="form-control" placeholder="••••••••" id="loginPassword" required />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label small text-muted">Keep me signed in on this device</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 justify-content-center py-2 mb-3">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In to Account
+            </button>
+
+            <!-- Quick Demo Credentials Chips for fast testing -->
+            <div class="pt-3 border-top">
+                <div class="small fw-bold text-muted mb-2"><i class="bi bi-lightning-charge text-warning"></i> 1-Click Demo Login:</div>
+                <div class="demo-pills">
+                    <span class="demo-chip" onclick="fillLogin('admin@hospital.com', 'Admin@123')">
+                        <i class="bi bi-person-gear text-danger"></i> Admin
+                    </span>
+                    <span class="demo-chip" onclick="fillLogin('doctor.carter@hospital.com', 'Doctor@123')">
+                        <i class="bi bi-heart-pulse text-success"></i> Doctor
+                    </span>
+                    <span class="demo-chip" onclick="fillLogin('nurse.clara@hospital.com', 'Nurse@123')">
+                        <i class="bi bi-activity text-info"></i> Nurse
+                    </span>
+                    <span class="demo-chip" onclick="fillLogin('warden.john@hospital.com', 'Warden@123')">
+                        <i class="bi bi-door-closed text-warning"></i> Warden
+                    </span>
+                    <span class="demo-chip" onclick="fillLogin('patient.emma@hospital.com', 'Patient@123')">
+                        <i class="bi bi-person text-primary"></i> Patient
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <span class="text-muted small">New to Sahyadri Hospital? </span>
+                <a asp-action="Register" class="small text-primary fw-bold text-decoration-none">Create an Account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function fillLogin(email, pass) {
+            $('#loginEmail').val(email);
+            $('#loginPassword').val(pass);
+            notifyInfo('Filled credentials for ' + email);
+        }
+    </script>
+}
+

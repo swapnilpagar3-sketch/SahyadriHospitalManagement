@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bgWarden" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bgWarden)"/>
+  <circle cx="60" cy="45" r="22" fill="#fef3c7"/>
+  <path d="M26 98 C28 72, 42 66, 60 66 C78 66, 92 72, 94 98 Z" fill="#ffffff"/>
+  <!-- Key / Ward Symbol -->
+  <circle cx="85" cy="85" r="8" fill="none" stroke="#78350f" stroke-width="3"/>
+  <path d="M85 93 L85 105 L91 105 M85 100 L89 100" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+</svg>
+

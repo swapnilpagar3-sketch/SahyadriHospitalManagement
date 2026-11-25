@@ -1,0 +1,202 @@
+@model HospitalManagementSystem.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Hospital Management Dashboard";
+    var role = ViewBag.UserRole as string ?? "Patient";
+}
+
+<div class="container-fluid p-0">
+    <!-- Header Welcome Banner -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-2 border-bottom">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Good day, @User.Identity?.Name!</h4>
+            <p class="text-muted small mb-0">Role: <span class="user-badge badge-@role">@role</span> &bull; Real-time Sahyadri Hospital operational metrics &bull; Pune Unit</p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-sm-0">
+            @if (role == "Admin" || role == "Warden")
+            {
+                <a asp-controller="Warden" asp-action="Admit" class="btn btn-outline-custom btn-sm">
+                    <i class="bi bi-door-open"></i> Admit Patient
+                </a>
+            }
+            @if (role == "Admin" || role == "Nurse")
+            {
+                <a asp-controller="Nurse" asp-action="RecordVitals" class="btn btn-outline-custom btn-sm">
+                    <i class="bi bi-activity"></i> Record Vitals
+                </a>
+            }
+            <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary-custom btn-sm">
+                <i class="bi bi-calendar-plus"></i> New Appointment
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon primary"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Total Patients</div>
+                    <div class="h3 fw-bold text-dark mb-0">@Model.TotalPatients</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon accent"><i class="bi bi-heart-pulse-fill"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Active Doctors</div>
+                    <div class="h3 fw-bold text-dark mb-0">@Model.TotalDoctors</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon warning"><i class="bi bi-calendar-event"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Today's Visits</div>
+                    <div class="h3 fw-bold text-dark mb-0">@Model.TodayAppointments</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon success"><i class="bi bi-hospital"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Beds Available</div>
+                    <div class="h3 fw-bold text-dark mb-0">@Model.AvailableBeds / @Model.TotalBeds</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Section: Appointments & Bed Admittance -->
+    <div class="row g-4 mb-4">
+        <!-- Recent Appointments Table -->
+        <div class="col-xl-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h6 class="card-title-modern">
+                        <i class="bi bi-calendar2-check text-primary"></i> Recent Appointments
+                    </h6>
+                    <a asp-controller="Appointments" asp-action="Index" class="btn btn-sm btn-link text-decoration-none">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date &amp; Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.RecentAppointments.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No appointments found.</td>
+                                </tr>
+                            }
+                            @foreach (var appt in Model.RecentAppointments)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@appt.AppointmentCode</td>
+                                    <td>@(appt.Patient?.FullName ?? "Unknown")</td>
+                                    <td>@(appt.Doctor?.User?.FullName ?? "Doctor")</td>
+                                    <td>@appt.AppointmentDate.ToString("MMM dd, yyyy") <span class="text-muted small">@appt.TimeSlot</span></td>
+                                    <td>
+                                        <span id="status-badge-@appt.Id" class="badge @(appt.Status == "Confirmed" ? "bg-success" : appt.Status == "Cancelled" ? "bg-danger" : appt.Status == "Completed" ? "bg-primary" : "bg-warning text-dark")">
+                                            @appt.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light border py-0 px-2" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 small">
+                                                <li><a class="dropdown-item" asp-controller="Appointments" asp-action="Details" asp-route-id="@appt.Id"><i class="bi bi-eye me-2 text-primary"></i>Details</a></li>
+                                                @if (appt.Status != "Completed" && appt.Status != "Cancelled")
+                                                {
+                                                    <li><button class="dropdown-item text-success" onclick="updateAppointmentStatus(@appt.Id, 'Confirmed')"><i class="bi bi-check-lg me-2"></i>Confirm</button></li>
+                                                    <li><button class="dropdown-item text-danger" onclick="updateAppointmentStatus(@appt.Id, 'Cancelled')"><i class="bi bi-x-lg me-2"></i>Cancel</button></li>
+                                                }
+                                                @if (role == "Doctor" || role == "Admin")
+                                                {
+                                                    <li><a class="dropdown-item text-info" asp-controller="Prescriptions" asp-action="Create" asp-route-appointmentId="@appt.Id"><i class="bi bi-file-earmark-medical me-2"></i>Prescribe</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Quick Info: Bed Matrix & Top Doctors -->
+        <div class="col-xl-4">
+            <!-- Bed Occupancy Snapshot -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h6 class="card-title-modern">
+                        <i class="bi bi-hospital text-info"></i> Bed Occupancy (Warden)
+                    </h6>
+                    <a asp-controller="Warden" asp-action="Index" class="btn btn-sm btn-link text-decoration-none">Manage</a>
+                </div>
+                <div class="p-3">
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Occupied: @Model.OccupiedBeds</span>
+                        <span>Available: @Model.AvailableBeds</span>
+                    </div>
+                    <div class="progress mb-3" style="height: 10px;">
+                        @{
+                            var occupancyPct = Model.TotalBeds > 0 ? (Model.OccupiedBeds * 100) / Model.TotalBeds : 0;
+                        }
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: @occupancyPct%"></div>
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @(100 - occupancyPct)%"></div>
+                    </div>
+                    <div class="d-flex justify-content-around text-center small pt-2 border-top">
+                        <div>
+                            <span class="badge bg-danger rounded-circle p-1"> </span>
+                            <div class="text-muted mt-1">Occupied (@occupancyPct%)</div>
+                        </div>
+                        <div>
+                            <span class="badge bg-success rounded-circle p-1"> </span>
+                            <div class="text-muted mt-1">Available (@(100 - occupancyPct)%)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specialist Physicians -->
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h6 class="card-title-modern">
+                        <i class="bi bi-award text-warning"></i> On-Duty Doctors
+                    </h6>
+                    <a asp-controller="Doctors" asp-action="Index" class="btn btn-sm btn-link text-decoration-none">All</a>
+                </div>
+                <div class="p-3">
+                    @foreach (var doc in Model.ActiveDoctors)
+                    {
+                        <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                            <img src="@(doc.User?.ProfilePicture ?? "/images/avatars/doctor1.svg")" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;" />
+                            <div class="overflow-hidden flex-grow-1">
+                                <div class="fw-bold text-dark small text-truncate">@(doc.User?.FullName ?? "Doctor")</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">@doc.Specialization &bull; @doc.RoomNumber</div>
+                            </div>
+                            <span class="badge bg-light text-primary small">₹@doc.ConsultationFee</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

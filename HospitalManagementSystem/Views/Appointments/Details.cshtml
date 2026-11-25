@@ -1,0 +1,88 @@
+@model HospitalManagementSystem.Models.Appointment
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-calendar-event text-primary"></i> Appointment Slip: @Model.AppointmentCode</h5>
+            <div class="btn-group btn-group-sm">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+            </div>
+        </div>
+        <div class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <div>
+                    <h3 class="fw-bold text-dark mb-0">@Model.AppointmentCode</h3>
+                    <div class="text-muted small">Booked on @Model.CreatedAt.ToString("MMM dd, yyyy")</div>
+                </div>
+                <span class="badge fs-6 @(Model.Status == "Confirmed" ? "bg-success" : Model.Status == "Cancelled" ? "bg-danger" : Model.Status == "Completed" ? "bg-primary" : "bg-warning text-dark")">
+                    @Model.Status
+                </span>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 h-100">
+                        <h6 class="fw-bold text-secondary mb-2"><i class="bi bi-person me-1"></i> Patient Information</h6>
+                        <div class="fw-bold text-dark h5 mb-1">@(Model.Patient?.FullName)</div>
+                        <div class="small text-muted mb-1">Code: @Model.Patient?.PatientCode</div>
+                        <div class="small text-muted mb-1">Phone: @Model.Patient?.Phone</div>
+                        <div class="small text-muted">Blood Group: <span class="badge bg-danger-subtle text-danger">@Model.Patient?.BloodGroup</span></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 h-100">
+                        <h6 class="fw-bold text-secondary mb-2"><i class="bi bi-heart-pulse me-1"></i> Specialist Doctor</h6>
+                        <div class="fw-bold text-dark h5 mb-1">@(Model.Doctor?.User?.FullName)</div>
+                        <div class="small text-muted mb-1">Specialization: @Model.Doctor?.Specialization</div>
+                        <div class="small text-muted mb-1">Department: @Model.Doctor?.Department?.Name</div>
+                        <div class="small text-muted">Room: @Model.Doctor?.RoomNumber</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Appointment Schedule</label>
+                    <div class="h6 fw-bold text-dark">@Model.AppointmentDate.ToString("dddd, MMMM dd, yyyy") at @Model.TimeSlot</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Consultation Fee</label>
+                    <div class="h5 fw-bold text-success">₹@Model.Fee</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="text-muted small text-uppercase fw-bold">Reported Symptoms</label>
+                <div class="p-2 border rounded bg-white small">@Model.Symptoms</div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="mb-3">
+                    <label class="text-muted small text-uppercase fw-bold">Internal Notes</label>
+                    <div class="p-2 border rounded bg-white small text-muted">@Model.Notes</div>
+                </div>
+            }
+
+            <div class="pt-3 border-top d-flex gap-2">
+                @if (Model.Prescription != null)
+                {
+                    <a asp-controller="Prescriptions" asp-action="Details" asp-route-id="@Model.Prescription.Id" class="btn btn-outline-custom">
+                        <i class="bi bi-file-medical"></i> View Issued Prescription
+                    </a>
+                }
+                else if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Prescriptions" asp-action="Create" asp-route-appointmentId="@Model.Id" class="btn btn-primary-custom">
+                        <i class="bi bi-file-medical"></i> Issue Prescription Now
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

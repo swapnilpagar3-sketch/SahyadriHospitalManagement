@@ -1,0 +1,107 @@
+@model IEnumerable<HospitalManagementSystem.Models.Invoice>
+@{
+    ViewData["Title"] = "Billing & Invoices";
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Billing &amp; Financial Accounts</h4>
+            <p class="text-muted small mb-0">Consultation fees, inpatient hospitalization receipts, payment collections</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (User.IsInRole("Admin") || User.IsInRole("Warden"))
+            {
+                <a asp-action="Create" class="btn btn-primary-custom btn-sm">
+                    <i class="bi bi-receipt"></i> Generate New Invoice
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Financial KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon success"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Total Collected Revenue</div>
+                    <div class="h3 fw-bold text-success mb-0">₹@ViewBag.TotalRevenue.ToString("N2")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div>
+                <div>
+                    <div class="text-muted small text-uppercase fw-bold">Total Pending Receivables</div>
+                    <div class="h3 fw-bold text-warning mb-0">₹@ViewBag.TotalPending.ToString("N2")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="card-modern">
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Patient</th>
+                        <th>Description</th>
+                        <th>Total Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Balance Due</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">No invoices generated yet.</td>
+                        </tr>
+                    }
+                    @foreach (var inv in Model)
+                    {
+                        var balance = inv.TotalAmount - inv.PaidAmount;
+                        <tr>
+                            <td class="fw-bold text-primary">@inv.InvoiceNumber</td>
+                            <td>
+                                <div class="fw-bold text-dark">@(inv.Patient?.FullName ?? "Unknown")</div>
+                                <small class="text-muted">Code: @inv.Patient?.PatientCode</small>
+                            </td>
+                            <td>
+                                <div class="small text-truncate" style="max-width: 200px;">@inv.Description</div>
+                            </td>
+                            <td class="fw-bold">₹@inv.TotalAmount.ToString("F2")</td>
+                            <td class="text-success">₹@inv.PaidAmount.ToString("F2")</td>
+                            <td class="fw-bold @(balance > 0 ? "text-danger" : "text-muted")">₹@balance.ToString("F2")</td>
+                            <td>
+                                <span class="badge @(inv.PaymentStatus == "Paid" ? "bg-success" : inv.PaymentStatus == "Partially Paid" ? "bg-warning text-dark" : "bg-danger")">
+                                    @inv.PaymentStatus
+                                </span>
+                            </td>
+                            <td>@inv.InvoiceDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@inv.Id" class="btn btn-outline-secondary" title="View & Print"><i class="bi bi-printer"></i></a>
+                                    @if (inv.PaymentStatus != "Paid")
+                                    {
+                                        <button type="button" class="btn btn-outline-success" onclick="payInvoice(@inv.Id, @inv.TotalAmount, @inv.PaidAmount)" title="Process Payment with Toastr">
+                                            <i class="bi bi-credit-card"></i> Pay
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

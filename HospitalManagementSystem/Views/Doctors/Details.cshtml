@@ -1,0 +1,104 @@
+@model HospitalManagementSystem.Models.Doctor
+@{
+    ViewData["Title"] = "Doctor Profile";
+}
+
+<div class="container-fluid p-0">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card-modern text-center p-4">
+                <img src="@(Model.User?.ProfilePicture ?? "/images/avatars/doctor1.svg")" class="rounded-circle border border-3 border-teal mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;" />
+                <h5 class="fw-bold text-dark mb-1">@(Model.User?.FullName ?? "Doctor")</h5>
+                <span class="badge bg-light text-primary mb-2">@Model.Specialization</span>
+                <p class="text-muted small mb-0"><i class="bi bi-envelope me-1"></i> @Model.User?.Email</p>
+                <p class="text-muted small"><i class="bi bi-telephone me-1"></i> @Model.User?.PhoneNumber</p>
+
+                <div class="pt-3 border-top mt-3 text-start small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Department:</span>
+                        <span class="fw-semibold">@Model.Department?.Name</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Degrees:</span>
+                        <span class="fw-semibold">@Model.Qualification</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Experience:</span>
+                        <span class="fw-semibold">@Model.ExperienceYears Years</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Consultation Fee:</span>
+                        <span class="fw-bold text-success">₹@Model.ConsultationFee</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Consulting Room:</span>
+                        <span class="fw-semibold">@Model.RoomNumber</span>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a asp-controller="Appointments" asp-action="Create" asp-route-doctorId="@Model.Id" class="btn btn-primary-custom w-100 justify-content-center">
+                        <i class="bi bi-calendar-plus"></i> Book Appointment
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h6 class="card-title-modern"><i class="bi bi-calendar-week text-primary"></i> Consulting Hours &amp; Schedule</h6>
+                </div>
+                <div class="p-4">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small text-uppercase fw-bold">Available Days</label>
+                            <div class="h6 fw-bold text-dark">@Model.AvailableDays</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small text-uppercase fw-bold">Daily Time Slot</label>
+                            <div class="h6 fw-bold text-dark">@Model.AvailableTimeSlot</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Appointments History -->
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h6 class="card-title-modern"><i class="bi bi-clock-history text-secondary"></i> Scheduled Patient Appointments</h6>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Patient</th>
+                                <th>Date &amp; Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Appointments.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">No appointments found for this doctor.</td>
+                                </tr>
+                            }
+                            @foreach (var appt in Model.Appointments)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@appt.AppointmentCode</td>
+                                    <td>@(appt.Patient?.FullName ?? "Unknown")</td>
+                                    <td>@appt.AppointmentDate.ToString("MMM dd, yyyy") (@appt.TimeSlot)</td>
+                                    <td><span class="badge bg-light text-dark">@appt.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bgDoc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bgDoc)"/>
+  <circle cx="60" cy="45" r="22" fill="#ccfbf1"/>
+  <!-- Doctor Coat & Stethoscope -->
+  <path d="M26 98 C28 72, 42 66, 60 66 C78 66, 92 72, 94 98 Z" fill="#ffffff"/>
+  <path d="M48 68 C48 80, 72 80, 72 68" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="85" r="4" fill="#0f766e"/>
+</svg>
+

@@ -1,0 +1,121 @@
+@model IEnumerable<HospitalManagementSystem.Models.Appointment>
+@{
+    ViewData["Title"] = "Appointments Management";
+    var doctors = ViewBag.Doctors as List<HospitalManagementSystem.Models.Doctor> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Appointments Management</h4>
+            <p class="text-muted small mb-0">Consultation schedules, patient bookings, and triage status</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary-custom btn-sm">
+            <i class="bi bi-calendar-plus"></i> Book New Appointment
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card-modern p-3 mb-4">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="All">All Statuses</option>
+                    @foreach (var st in new[] { "Scheduled", "Confirmed", "In-Progress", "Completed", "Cancelled" })
+                    {
+                        <option value="@st" selected="@(ViewBag.SelectedStatus == st)">@st</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="doctorId" class="form-select">
+                    <option value="">All Doctors</option>
+                    @foreach (var doc in doctors)
+                    {
+                        <option value="@doc.Id" selected="@(ViewBag.SelectedDoctor == doc.Id)">@(doc.User?.FullName ?? "Doctor") (@doc.Specialization)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control" value="@ViewBag.SelectedDate" />
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary-custom w-100 justify-content-center">Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="card-modern">
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Patient</th>
+                        <th>Doctor / Specialty</th>
+                        <th>Date &amp; Slot</th>
+                        <th>Symptoms</th>
+                        <th>Fee</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">No appointments found.</td>
+                        </tr>
+                    }
+                    @foreach (var appt in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-primary">@appt.AppointmentCode</td>
+                            <td>
+                                <div class="fw-bold text-dark">@(appt.Patient?.FullName ?? "Patient")</div>
+                                <small class="text-muted">@(appt.Patient?.Phone)</small>
+                            </td>
+                            <td>
+                                <div>@(appt.Doctor?.User?.FullName ?? "Doctor")</div>
+                                <small class="text-muted">@appt.Doctor?.Specialization &bull; @appt.Doctor?.Department?.Name</small>
+                            </td>
+                            <td>
+                                <div>@appt.AppointmentDate.ToString("MMM dd, yyyy")</div>
+                                <span class="badge bg-light text-dark"><i class="bi bi-clock me-1"></i>@appt.TimeSlot</span>
+                            </td>
+                            <td class="small text-muted" style="max-width: 200px;">
+                                <div class="text-truncate" title="@appt.Symptoms">@appt.Symptoms</div>
+                            </td>
+                            <td class="fw-bold text-success">₹@appt.Fee</td>
+                            <td>
+                                <span id="status-badge-@appt.Id" class="badge @(appt.Status == "Confirmed" ? "bg-success" : appt.Status == "Cancelled" ? "bg-danger" : appt.Status == "Completed" ? "bg-primary" : "bg-warning text-dark")">
+                                    @appt.Status
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@appt.Id" class="btn btn-outline-secondary" title="Details"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@appt.Id" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    
+                                    @if (appt.Status != "Completed" && appt.Status != "Cancelled")
+                                    {
+                                        <button type="button" class="btn btn-outline-success" onclick="updateAppointmentStatus(@appt.Id, 'Confirmed')" title="Confirm Visit"><i class="bi bi-check-lg"></i></button>
+                                        <button type="button" class="btn btn-outline-danger" onclick="updateAppointmentStatus(@appt.Id, 'Cancelled')" title="Cancel"><i class="bi bi-x-lg"></i></button>
+                                    }
+
+                                    @if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                                    {
+                                        <a asp-controller="Prescriptions" asp-action="Create" asp-route-appointmentId="@appt.Id" class="btn btn-outline-info" title="Write Prescription"><i class="bi bi-file-earmark-medical"></i></a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

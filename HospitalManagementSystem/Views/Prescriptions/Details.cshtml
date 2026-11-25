@@ -1,0 +1,90 @@
+@model HospitalManagementSystem.Models.Prescription
+@{
+    ViewData["Title"] = "Prescription Slip - " + Model.Patient?.FullName;
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center mb-3 d-print-none">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Prescriptions</a>
+        <button onclick="window.print()" class="btn btn-primary-custom btn-sm"><i class="bi bi-printer"></i> Print Prescription</button>
+    </div>
+
+    <!-- Official Prescription Slip -->
+    <div class="card-modern p-5 max-w-800 mx-auto bg-white shadow" style="max-width: 800px; border: 2px solid #0d9488;">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center pb-4 border-bottom border-2">
+            <div>
+                <img src="~/images/hospital-logo.webp" alt="Sahyadri Hospital Logo" height="68" style="object-fit: contain; max-width: 250px;" />
+                <div class="text-muted small mt-1">Plot No. 30-C, Erandwane, Karve Road, Pune - 411004 &bull; Ph: +91 20 6721 5000 / 1066</div>
+            </div>
+            <div class="text-end">
+                <h5 class="fw-bold text-dark mb-0">@(Model.Doctor?.User?.FullName ?? "Doctor")</h5>
+                <div class="text-primary small fw-semibold">@Model.Doctor?.Specialization</div>
+                <div class="text-muted small">@Model.Doctor?.Qualification</div>
+                <div class="text-muted small">Dept: @Model.Doctor?.Department?.Name</div>
+            </div>
+        </div>
+
+        <!-- Patient Demographics Bar -->
+        <div class="row my-4 p-3 bg-light rounded-3 small">
+            <div class="col-sm-4 mb-2 mb-sm-0">
+                <span class="text-muted">Patient:</span>
+                <strong class="text-dark d-block">@(Model.Patient?.FullName)</strong>
+            </div>
+            <div class="col-sm-2 mb-2 mb-sm-0">
+                <span class="text-muted">Code:</span>
+                <strong class="d-block">@Model.Patient?.PatientCode</strong>
+            </div>
+            <div class="col-sm-2 mb-2 mb-sm-0">
+                <span class="text-muted">Blood:</span>
+                <strong class="text-danger d-block">@Model.Patient?.BloodGroup</strong>
+            </div>
+            <div class="col-sm-2 mb-2 mb-sm-0">
+                <span class="text-muted">Gender:</span>
+                <strong class="d-block">@Model.Patient?.Gender</strong>
+            </div>
+            <div class="col-sm-2 text-sm-end">
+                <span class="text-muted">Date:</span>
+                <strong class="d-block">@Model.PrescribedDate.ToString("dd/MM/yyyy")</strong>
+            </div>
+        </div>
+
+        <!-- Diagnosis -->
+        <div class="mb-4">
+            <span class="text-uppercase fw-bold text-muted small" style="letter-spacing: 0.05em;">Diagnosis</span>
+            <div class="h5 fw-bold text-dark mt-1">@Model.Diagnosis</div>
+        </div>
+
+        <!-- Rx Symbol & Medicines -->
+        <div class="mb-5">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="display-6 fw-bold text-primary font-serif">℞</span>
+                <span class="text-uppercase fw-bold text-muted small">Medications &amp; Dosage Instructions</span>
+            </div>
+            <div class="p-3 border rounded-3 bg-white" style="white-space: pre-wrap; font-size: 1.05rem; line-height: 1.8;">@Model.Medicines</div>
+        </div>
+
+        <!-- Advice & Follow-Up -->
+        <div class="row pt-3 border-top">
+            <div class="col-sm-7 mb-3 mb-sm-0">
+                <span class="text-muted small text-uppercase fw-bold">General Advice &amp; Lifestyle</span>
+                <p class="small text-dark mb-0 mt-1">@(Model.AdviceInstructions ?? "Continue medications as prescribed. Stay well-hydrated.")</p>
+                @if (Model.FollowUpDate.HasValue)
+                {
+                    <div class="mt-2 text-primary small fw-bold">
+                        <i class="bi bi-calendar-event me-1"></i> Follow-up visit: @Model.FollowUpDate.Value.ToString("dddd, MMMM dd, yyyy")
+                    </div>
+                }
+            </div>
+            <div class="col-sm-5 text-sm-end mt-4 mt-sm-0">
+                <div class="d-inline-block text-center">
+                    <div style="height: 40px;"></div>
+                    <div class="border-top pt-1 text-muted small" style="min-width: 160px;">
+                        Doctor's Signature / Seal
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

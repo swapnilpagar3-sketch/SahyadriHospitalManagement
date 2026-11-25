@@ -1,0 +1,211 @@
+@model HospitalManagementSystem.Models.User
+@{
+    ViewData["Title"] = "My Profile - Sahyadri Hospital";
+}
+
+<div class="container-fluid py-2">
+    <!-- Header banner -->
+    <div class="card-modern border-0 mb-4 text-white" style="background: linear-gradient(135deg, #0f766e 0%, #0369a1 50%, #f97316 100%);">
+        <div class="p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <span class="badge bg-white text-dark fw-bold px-3 py-1 mb-2">
+                    <i class="bi bi-hospital me-1 text-danger"></i> Sahyadri Hospital Clinical Network
+                </span>
+                <h3 class="fw-bold mb-1">Welcome, @Model.FullName</h3>
+                <p class="mb-0 opacity-90 small">
+                    <i class="bi bi-geo-alt me-1"></i> Sahyadri Super Speciality Hospital, Pune &bull; Medical Health Profile
+                </p>
+            </div>
+            <div class="text-md-end">
+                <span class="badge bg-warning text-dark px-3 py-2 fw-bold fs-6">
+                    <i class="bi bi-shield-check me-1"></i> Verified Account
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Identity Card -->
+        <div class="col-lg-4 mb-4">
+            <div class="card-modern text-center p-4 h-100 shadow-sm border-top border-4 border-teal">
+                <!-- User Photo -->
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    <img src="@Model.ProfilePicture" id="profileImageDisplay" 
+                         class="rounded-circle border border-4 border-warning shadow" 
+                         style="width: 120px; height: 120px; object-fit: cover; background: #f8fafc;" 
+                         alt="@Model.FullName Photo" />
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle p-2" title="Active"></span>
+                </div>
+
+                <h4 class="fw-bold text-dark mb-1">@Model.FullName</h4>
+                <div class="mb-3">
+                    <span class="user-badge badge-@Model.Role fs-6 px-3 py-1">@Model.Role</span>
+                </div>
+
+                <div class="bg-light rounded-3 p-3 mb-3 text-start small">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-envelope-at text-teal me-2 fs-5"></i>
+                        <div class="overflow-hidden">
+                            <span class="text-muted d-block" style="font-size: 0.72rem;">REGISTERED EMAIL</span>
+                            <span class="fw-semibold text-truncate d-block">@Model.Email</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-telephone text-warning me-2 fs-5"></i>
+                            <div>
+                                <span class="text-muted d-block" style="font-size: 0.72rem;">CONTACT NUMBER (INDIA)</span>
+                                <span class="fw-semibold">+91 @Model.PhoneNumber</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar-check text-info me-2 fs-5"></i>
+                        <div>
+                            <span class="text-muted d-block" style="font-size: 0.72rem;">MEMBER SINCE</span>
+                            <span class="fw-semibold">@Model.CreatedAt.ToString("dd MMMM yyyy")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3 text-start small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Hospital Unit:</span>
+                        <span class="fw-semibold text-dark">Erandwane, Pune</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Digital Health ID:</span>
+                        <span class="badge bg-info-subtle text-info border">SYD-@Model.Id.ToString("D5")</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">EHR Security:</span>
+                        <span class="badge bg-success-subtle text-success border"><i class="bi bi-shield-lock me-1"></i>DPDP Compliant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="col-lg-8">
+            <div class="card-modern shadow-sm border-top border-4 border-warning">
+                <div class="card-header-modern bg-white">
+                    <h5 class="card-title-modern">
+                        <i class="bi bi-person-gear text-teal"></i> Update Sahyadri Profile &amp; Photo
+                    </h5>
+                    <span class="badge bg-light text-muted border">Live Account Settings</span>
+                </div>
+                <div class="p-4">
+                    <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Photo Upload & Avatar Picker -->
+                        <div class="p-3 bg-light rounded-4 mb-4 border">
+                            <label class="form-label small fw-bold text-dark d-block">
+                                <i class="bi bi-image text-warning me-1"></i> Update Your Profile Photo
+                            </label>
+                            
+                            <div class="row align-items-center g-3 mb-3">
+                                <div class="col-auto">
+                                    <img id="editPhotoPreview" src="@Model.ProfilePicture" 
+                                         class="rounded-circle border border-3 border-teal shadow-sm" 
+                                         style="width: 70px; height: 70px; object-fit: cover; background: #fff;" 
+                                         alt="Profile Preview" />
+                                </div>
+                                <div class="col">
+                                    <label for="editPhotoFileInput" class="btn btn-sm btn-outline-custom mb-1" style="cursor: pointer;">
+                                        <i class="bi bi-upload me-1"></i> Upload New Photo
+                                    </label>
+                                    <input type="file" name="photoFile" id="editPhotoFileInput" class="d-none" accept="image/png, image/jpeg, image/jpg, image/webp" />
+                                    <div class="small text-muted" id="editPhotoFileName">Upload real photo (JPG, PNG, WebP) to update your profile photo across Sahyadri HMS</div>
+                                </div>
+                            </div>
+
+                            <div class="border-top pt-2">
+                                <label class="form-label small text-muted d-block mb-1">Or choose an avatar:</label>
+                                <div class="avatar-selector">
+                                    <img src="/images/avatars/patient.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/patient.svg" ? "selected" : "")" data-avatar="/images/avatars/patient.svg" title="Patient" />
+                                    <img src="/images/avatars/doctor1.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/doctor1.svg" ? "selected" : "")" data-avatar="/images/avatars/doctor1.svg" title="Doctor Male" />
+                                    <img src="/images/avatars/doctor2.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/doctor2.svg" ? "selected" : "")" data-avatar="/images/avatars/doctor2.svg" title="Doctor Female" />
+                                    <img src="/images/avatars/nurse.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/nurse.svg" ? "selected" : "")" data-avatar="/images/avatars/nurse.svg" title="Nurse" />
+                                    <img src="/images/avatars/warden.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/warden.svg" ? "selected" : "")" data-avatar="/images/avatars/warden.svg" title="Warden" />
+                                    <img src="/images/avatars/admin.svg" class="avatar-option @(Model.ProfilePicture == "/images/avatars/admin.svg" ? "selected" : "")" data-avatar="/images/avatars/admin.svg" title="Admin" />
+                                </div>
+                                <input type="hidden" name="profilePicture" id="selectedAvatarInput" value="@Model.ProfilePicture" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Full Name (पूरा नाम)</label>
+                                <input type="text" name="fullName" class="form-control" value="@Model.FullName" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Email Address (Read-only)</label>
+                                <input type="text" class="form-control bg-light" value="@Model.Email" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Mobile Number (भारत)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light small fw-bold text-muted">+91</span>
+                                    <input type="text" name="phoneNumber" class="form-control" value="@Model.PhoneNumber" placeholder="98765 43210" />
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Designated Role</label>
+                                <input type="text" class="form-control bg-light fw-semibold" value="@Model.Role" readonly />
+                            </div>
+                        </div>
+
+                        <hr class="my-3" />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-controller="Home" asp-action="Privacy" class="small text-muted text-decoration-none">
+                                <i class="bi bi-shield-check me-1"></i> Sahyadri Privacy Policy
+                            </a>
+                            <button type="submit" class="btn btn-primary-custom px-4 py-2 shadow-sm">
+                                <i class="bi bi-check2-circle"></i> Save Profile Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Live file preview for edit photo
+            $('#editPhotoFileInput').on('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    $('#editPhotoFileName').html('<span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Selected: ' + file.name + '</span>');
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        $('#editPhotoPreview').attr('src', evt.target.result);
+                        $('#profileImageDisplay').attr('src', evt.target.result);
+                        $('.avatar-option').removeClass('selected');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Preset avatar click
+            $('.avatar-option').on('click', function () {
+                $('.avatar-option').removeClass('selected');
+                $(this).addClass('selected');
+                const src = $(this).data('avatar');
+                $('#editPhotoPreview').attr('src', src);
+                $('#profileImageDisplay').attr('src', src);
+                $('#selectedAvatarInput').val(src);
+                $('#editPhotoFileInput').val('');
+                $('#editPhotoFileName').text('Preset avatar selected');
+            });
+        });
+    </script>
+}

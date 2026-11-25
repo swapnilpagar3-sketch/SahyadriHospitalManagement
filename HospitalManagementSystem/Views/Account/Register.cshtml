@@ -1,0 +1,226 @@
+@model HospitalManagementSystem.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "_Layout";
+    var departments = ViewBag.Departments as List<HospitalManagementSystem.Models.Department> ?? new();
+}
+
+<div class="auth-bg">
+    <div class="auth-card" style="max-width: 680px;">
+        <div class="auth-logo">
+            <img src="~/images/hospital-logo.webp" alt="Sahyadri Hospital Logo" height="75" style="object-fit: contain; max-width: 280px;" />
+            <h4 class="fw-bold text-dark mt-3 mb-1">Create Sahyadri Account</h4>
+            <p class="text-muted small">Join Sahyadri Super Speciality Hospital Clinical &amp; Patient Portal &bull; Pune</p>
+        </div>
+
+        <form asp-action="Register" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <!-- Profile Photo Upload & Avatar Picker -->
+            <div class="card p-3 mb-4 border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, #f0fdfa 0%, #fff7ed 100%); border: 1px solid #fed7aa !important;">
+                <label class="form-label small fw-bold text-dark d-block text-center mb-2">
+                    <i class="bi bi-camera-fill text-warning me-1"></i> Your Profile Photo (Used for Your Profile)
+                </label>
+                
+                <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-3">
+                    <div class="position-relative">
+                        <img id="currentAvatarPreview" src="~/images/avatars/patient.svg" 
+                             class="rounded-circle border border-3 border-teal shadow-sm" 
+                             style="width: 80px; height: 80px; object-fit: cover; background: #fff;" 
+                             alt="Profile Photo Preview" />
+                        <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-1" title="Active Photo"></span>
+                    </div>
+
+                    <div class="text-center text-sm-start">
+                        <label for="photoFileInput" class="btn btn-sm btn-outline-custom mb-1" style="cursor: pointer;">
+                            <i class="bi bi-cloud-arrow-up me-1"></i> Upload From Device
+                        </label>
+                        <input type="file" asp-for="PhotoFile" id="photoFileInput" class="d-none" accept="image/png, image/jpeg, image/jpg, image/webp" />
+                        <div class="small text-muted" id="photoFileName">JPG, PNG, WebP up to 5MB</div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <span class="badge bg-white text-secondary border mb-2 px-3 py-1 font-monospace" style="font-size: 0.72rem;">OR SELECT AN AVATAR PRESET</span>
+                    <div class="avatar-selector justify-content-center">
+                        <img src="~/images/avatars/patient.svg" class="avatar-option selected" data-avatar="/images/avatars/patient.svg" title="Patient" />
+                        <img src="~/images/avatars/doctor1.svg" class="avatar-option" data-avatar="/images/avatars/doctor1.svg" title="Doctor Male" />
+                        <img src="~/images/avatars/doctor2.svg" class="avatar-option" data-avatar="/images/avatars/doctor2.svg" title="Doctor Female" />
+                        <img src="~/images/avatars/nurse.svg" class="avatar-option" data-avatar="/images/avatars/nurse.svg" title="Nurse" />
+                        <img src="~/images/avatars/warden.svg" class="avatar-option" data-avatar="/images/avatars/warden.svg" title="Warden" />
+                        <img src="~/images/avatars/admin.svg" class="avatar-option" data-avatar="/images/avatars/admin.svg" title="Admin" />
+                    </div>
+                    <input type="hidden" asp-for="SelectedAvatar" id="selectedAvatarInput" value="/images/avatars/patient.svg" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FullName" class="form-label small fw-bold text-secondary">Full Name (पूरा नाम)</label>
+                    <input asp-for="FullName" class="form-control" placeholder="e.g. Rajesh Patil" required />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label small fw-bold text-secondary">Email Address</label>
+                    <input asp-for="Email" class="form-control" placeholder="name@domain.com" required />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PhoneNumber" class="form-label small fw-bold text-secondary">Mobile Number (भारत)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light small fw-bold text-muted">+91</span>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="98765 43210" required />
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Role" class="form-label small fw-bold text-secondary">Account Role</label>
+                    <select asp-for="Role" class="form-select" id="roleSelect" required>
+                        <option value="Patient">Patient (रुग्ण)</option>
+                        <option value="Doctor">Doctor (वैद्यकीय तज्ञ)</option>
+                        <option value="Nurse">Staff Nurse (परिचारिका)</option>
+                        <option value="Warden">Ward Supervisor / Warden</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Doctor Extra Fields (shown when Doctor selected) -->
+            <div id="doctorFields" style="display: none;" class="p-3 bg-light rounded-3 mb-3 border">
+                <div class="small fw-bold text-primary mb-2"><i class="bi bi-heart-pulse"></i> Doctor Credentials &amp; Medical Registration</div>
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="Specialization" class="form-label small">Specialization</label>
+                        <input asp-for="Specialization" class="form-control form-control-sm" placeholder="e.g. Cardiologist" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="Qualification" class="form-label small">Qualification</label>
+                        <input asp-for="Qualification" class="form-control form-control-sm" placeholder="MBBS, MD, DNB" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="DepartmentId" class="form-label small">Department</label>
+                        <select asp-for="DepartmentId" class="form-select form-select-sm">
+                            @foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id">@dept.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Extra Fields (shown when Patient selected) -->
+            <div id="patientFields" class="p-3 bg-light rounded-3 mb-3 border">
+                <div class="small fw-bold text-primary mb-2"><i class="bi bi-person"></i> Patient Demographic &amp; Medical Details</div>
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="BloodGroup" class="form-label small">Blood Group</label>
+                        <select asp-for="BloodGroup" class="form-select form-select-sm">
+                            <option value="O+">O+ (Rh Positive)</option>
+                            <option value="A+">A+ (Rh Positive)</option>
+                            <option value="B+">B+ (Rh Positive)</option>
+                            <option value="AB+">AB+ (Rh Positive)</option>
+                            <option value="O-">O- (Rh Negative)</option>
+                            <option value="A-">A- (Rh Negative)</option>
+                            <option value="B-">B- (Rh Negative)</option>
+                            <option value="AB-">AB- (Rh Negative)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="Gender" class="form-label small">Gender</label>
+                        <select asp-for="Gender" class="form-select form-select-sm">
+                            <option value="Male">Male (पुरुष)</option>
+                            <option value="Female">Female (स्त्री)</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label asp-for="DateOfBirth" class="form-label small">Date of Birth</label>
+                        <input asp-for="DateOfBirth" type="date" class="form-control form-control-sm" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label small fw-bold text-secondary">Password</label>
+                    <input asp-for="Password" class="form-control" placeholder="••••••••" required />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label small fw-bold text-secondary">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" required />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="termsCheck" required checked>
+                <label class="form-check-label small text-muted" for="termsCheck">
+                    I agree to Sahyadri Hospital's <a asp-controller="Home" asp-action="Privacy" target="_blank" class="text-primary text-decoration-none fw-semibold">Privacy Policy</a>, EHR Data Protection, and Terms of Care.
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 justify-content-center py-2 mb-3 shadow-sm">
+                <i class="bi bi-shield-check"></i> Complete Sahyadri Registration
+            </button>
+
+            <div class="text-center">
+                <span class="text-muted small">Already registered with Sahyadri? </span>
+                <a asp-action="Login" class="small text-primary fw-bold text-decoration-none">Sign In Here</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            // Role switcher
+            $('#roleSelect').on('change', function () {
+                const role = $(this).val();
+                if (role === 'Doctor') {
+                    $('#doctorFields').slideDown();
+                    $('#patientFields').slideUp();
+                } else if (role === 'Patient') {
+                    $('#patientFields').slideDown();
+                    $('#doctorFields').slideUp();
+                } else {
+                    $('#doctorFields').slideUp();
+                    $('#patientFields').slideUp();
+                }
+            });
+
+            // Live preview for uploaded custom photo
+            $('#photoFileInput').on('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    $('#photoFileName').html('<span class="text-success fw-bold"><i class="bi bi-check-circle"></i> ' + file.name + '</span>');
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        $('#currentAvatarPreview').attr('src', evt.target.result);
+                        $('.avatar-option').removeClass('selected');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Preset avatar click
+            $('.avatar-option').on('click', function () {
+                $('.avatar-option').removeClass('selected');
+                $(this).addClass('selected');
+                const src = $(this).data('avatar');
+                $('#currentAvatarPreview').attr('src', src);
+                $('#selectedAvatarInput').val(src);
+                // Reset file input if avatar preset chosen
+                $('#photoFileInput').val('');
+                $('#photoFileName').text('Preset avatar selected');
+            });
+        });
+    </script>
+}

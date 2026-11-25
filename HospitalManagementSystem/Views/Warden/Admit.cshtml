@@ -1,0 +1,57 @@
+@model HospitalManagementSystem.Models.BedAdmission
+@{
+    ViewData["Title"] = "Admit Patient to Bed";
+    var patients = ViewBag.Patients as List<HospitalManagementSystem.Models.Patient> ?? new();
+    var availableBeds = ViewBag.AvailableBeds as List<HospitalManagementSystem.Models.Bed> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-door-open text-primary"></i> Inpatient Hospitalization: Admit Patient</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Bed Grid</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Admit" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="PatientId" class="form-label small fw-bold">Select Patient</label>
+                    <select asp-for="PatientId" class="form-select" required>
+                        <option value="">-- Choose Patient --</option>
+                        @foreach (var pat in patients)
+                        {
+                            <option value="@pat.Id">@pat.FullName (@pat.PatientCode) &bull; Blood: @pat.BloodGroup</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="BedId" class="form-label small fw-bold">Select Available Bed</label>
+                    <select asp-for="BedId" class="form-select" required>
+                        <option value="">-- Choose Vacant Bed --</option>
+                        @foreach (var bed in availableBeds)
+                        {
+                            <option value="@bed.Id" selected="@(Model.BedId == bed.Id)">
+                                @bed.Ward?.WardName &bull; Bed @bed.BedNumber &bull; Rate: ₹@bed.Ward?.DailyCharge / day
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Reason" class="form-label small fw-bold">Clinical Reason / Diagnosis for Admission</label>
+                    <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Condition details, medical department, attending doctor notes..." required></textarea>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Confirm Inpatient Admission
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

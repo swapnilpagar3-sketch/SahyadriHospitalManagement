@@ -1,0 +1,86 @@
+@model HospitalManagementSystem.Models.Doctor
+@{
+    ViewData["Title"] = "Edit Doctor";
+    var departments = ViewBag.Departments as List<HospitalManagementSystem.Models.Department> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-pencil-square text-primary"></i> Edit Doctor: @(Model.User?.FullName)</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Directory</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Doctor Name</label>
+                        <input type="text" name="fullName" class="form-control" value="@Model.User?.FullName" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" value="@Model.User?.PhoneNumber" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DepartmentId" class="form-label small fw-bold">Department</label>
+                        <select asp-for="DepartmentId" class="form-select">
+                            @foreach (var dept in departments)
+                            {
+                                <option value="@dept.Id" selected="@(Model.DepartmentId == dept.Id)">@dept.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Specialization" class="form-label small fw-bold">Specialization</label>
+                        <input asp-for="Specialization" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Qualification" class="form-label small fw-bold">Qualification</label>
+                        <input asp-for="Qualification" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="ExperienceYears" class="form-label small fw-bold">Experience (Years)</label>
+                        <input asp-for="ExperienceYears" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="ConsultationFee" class="form-label small fw-bold">Consultation Fee (₹)</label>
+                        <input asp-for="ConsultationFee" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="RoomNumber" class="form-label small fw-bold">Room Number</label>
+                        <input asp-for="RoomNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="AvailableDays" class="form-label small fw-bold">Available Days</label>
+                        <input asp-for="AvailableDays" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="AvailableTimeSlot" class="form-label small fw-bold">Time Slots</label>
+                        <input asp-for="AvailableTimeSlot" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

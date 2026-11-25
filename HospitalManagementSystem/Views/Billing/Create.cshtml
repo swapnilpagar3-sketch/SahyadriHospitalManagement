@@ -1,0 +1,81 @@
+@model HospitalManagementSystem.Models.Invoice
+@{
+    ViewData["Title"] = "Generate Invoice";
+    var patients = ViewBag.Patients as List<HospitalManagementSystem.Models.Patient> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 700px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-receipt text-primary"></i> Create Hospital Invoice</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Invoices</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="InvoiceNumber" class="form-label small fw-bold">Invoice Number</label>
+                        <input asp-for="InvoiceNumber" class="form-control" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PaymentStatus" class="form-label small fw-bold">Payment Status</label>
+                        <select asp-for="PaymentStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Partially Paid">Partially Paid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PatientId" class="form-label small fw-bold">Select Patient</label>
+                    <select asp-for="PatientId" class="form-select" required>
+                        <option value="">-- Choose Patient --</option>
+                        @foreach (var pat in patients)
+                        {
+                            <option value="@pat.Id" selected="@(Model.PatientId == pat.Id)">
+                                @pat.FullName (@pat.PatientCode) &bull; Phone: @pat.Phone
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TotalAmount" class="form-label small fw-bold">Total Bill Amount (₹)</label>
+                        <input asp-for="TotalAmount" type="number" step="0.01" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PaidAmount" class="form-label small fw-bold">Initial Amount Received (₹)</label>
+                        <input asp-for="PaidAmount" type="number" step="0.01" class="form-control" value="0.00" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaymentMethod" class="form-label small fw-bold">Payment Mode</label>
+                    <select asp-for="PaymentMethod" class="form-select">
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="UPI">UPI / Digital</option>
+                        <option value="Insurance">Insurance TPA</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label small fw-bold">Bill Description / Service Details</label>
+                    <input asp-for="Description" class="form-control" placeholder="e.g. Diagnostic lab panel + Specialist consultation" required />
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-check-circle"></i> Save &amp; Issue Invoice
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

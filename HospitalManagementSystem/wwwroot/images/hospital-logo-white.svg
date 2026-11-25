@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" width="100%" height="100%">
+  <defs>
+    <!-- Saffron & Teal Indian Medical Gradients -->
+    <linearGradient id="sahyadriGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="50%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+    <filter id="logoShadowDark" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#ea580c" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Emblem Icon: Sahyadri Peak + Medical Cross + Healing Halo -->
+  <g transform="translate(10, 10)">
+    <!-- Base Rounded Shield / Tile -->
+    <rect x="0" y="0" width="60" height="60" rx="16" fill="url(#sahyadriGradDark)" filter="url(#logoShadowDark)"/>
+    
+    <!-- Sahyadri Mountain Peak Curves (Subtle Indian Heritage Silhouette) -->
+    <path d="M 6 48 Q 20 28 30 35 Q 40 22 54 48 Z" fill="#ffffff" opacity="0.18" />
+
+    <!-- Medical Cross -->
+    <rect x="25" y="14" width="10" height="32" rx="4" fill="#ffffff"/>
+    <rect x="14" y="25" width="32" height="10" rx="4" fill="#ffffff"/>
+
+    <!-- Dynamic Heartbeat / Pulse Accent -->
+    <path d="M 12 30 L 19 30 L 23 20 L 27 40 L 32 24 L 35 34 L 38 30 L 48 30" 
+          fill="none" stroke="#fed7aa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Small Protective Sun / Bindi Point -->
+    <circle cx="30" cy="9" r="2.5" fill="#fef08a" />
+  </g>
+
+  <!-- Brand Typography (White/Gold for Dark Themes) -->
+  <text x="82" y="37" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif" font-size="24" font-weight="900" fill="#ffffff" letter-spacing="1">
+    SAHYADRI<tspan fill="#f97316">.</tspan>
+  </text>
+
+  <!-- Category: SUPER SPECIALITY HOSPITAL -->
+  <text x="83" y="52" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif" font-size="9.5" font-weight="700" fill="#38bdf8" letter-spacing="2.2">
+    SUPER SPECIALITY HOSPITAL
+  </text>
+
+  <!-- Unit & Accreditation Tag -->
+  <text x="83" y="64" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif" font-size="8" font-weight="600" fill="#94a3b8" letter-spacing="1">
+    NABH ACCREDITED &bull; PUNE, INDIA
+  </text>
+</svg>
+

@@ -1,0 +1,61 @@
+@model HospitalManagementSystem.Models.Patient
+@{
+    ViewData["Title"] = "Vitals Trend - " + Model.FullName;
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-900 mx-auto" style="max-width: 900px;">
+        <div class="card-header-modern">
+            <div>
+                <h5 class="card-title-modern mb-0"><i class="bi bi-activity text-danger"></i> Vitals History: @Model.FullName</h5>
+                <small class="text-muted">Code: @Model.PatientCode &bull; Blood Group: @Model.BloodGroup</small>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="RecordVitals" asp-route-patientId="@Model.Id" class="btn btn-sm btn-primary-custom">
+                    <i class="bi bi-plus-circle"></i> Log New
+                </a>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>Date &amp; Time</th>
+                        <th>BP (mmHg)</th>
+                        <th>Pulse (bpm)</th>
+                        <th>SpO2</th>
+                        <th>Temp</th>
+                        <th>Resp Rate</th>
+                        <th>Sugar</th>
+                        <th>Nurse</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Vitals.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">No vital signs logged for this patient.</td>
+                        </tr>
+                    }
+                    @foreach (var v in Model.Vitals.OrderByDescending(v => v.RecordedAt))
+                    {
+                        <tr>
+                            <td class="small fw-semibold">@v.RecordedAt.ToString("MMM dd, yyyy hh:mm tt")</td>
+                            <td><span class="badge bg-light text-dark border">@v.BloodPressure</span></td>
+                            <td>@v.HeartRate</td>
+                            <td><span class="text-success fw-bold">@v.OxygenSaturation%</span></td>
+                            <td>@v.Temperature °F</td>
+                            <td>@v.RespiratoryRate /m</td>
+                            <td>@(v.BloodSugar.HasValue ? $"{v.BloodSugar} mg/dL" : "-")</td>
+                            <td class="small">@v.RecordedByNurse</td>
+                            <td class="small text-muted" style="max-width: 150px;">@v.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,88 @@
+@model HospitalManagementSystem.Models.Appointment
+@{
+    ViewData["Title"] = "Edit Appointment";
+    var patients = ViewBag.Patients as List<HospitalManagementSystem.Models.Patient> ?? new();
+    var doctors = ViewBag.Doctors as List<HospitalManagementSystem.Models.Doctor> ?? new();
+}
+
+<div class="container-fluid p-0">
+    <div class="card-modern max-w-800 mx-auto" style="max-width: 800px;">
+        <div class="card-header-modern">
+            <h5 class="card-title-modern"><i class="bi bi-pencil-square text-primary"></i> Edit Appointment @Model.AppointmentCode</h5>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to Appointments</a>
+        </div>
+        <div class="p-4">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="AppointmentCode" />
+                <input type="hidden" asp-for="CreatedAt" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PatientId" class="form-label small fw-bold">Patient</label>
+                        <select asp-for="PatientId" class="form-select" required>
+                            @foreach (var pat in patients)
+                            {
+                                <option value="@pat.Id" selected="@(Model.PatientId == pat.Id)">@pat.FullName (@pat.PatientCode)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DoctorId" class="form-label small fw-bold">Doctor</label>
+                        <select asp-for="DoctorId" class="form-select" required>
+                            @foreach (var doc in doctors)
+                            {
+                                <option value="@doc.Id" selected="@(Model.DoctorId == doc.Id)">@(doc.User?.FullName ?? "Doctor") (@doc.Specialization)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="AppointmentDate" class="form-label small fw-bold">Date</label>
+                        <input asp-for="AppointmentDate" type="date" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="TimeSlot" class="form-label small fw-bold">Time Slot</label>
+                        <input asp-for="TimeSlot" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Status" class="form-label small fw-bold">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="In-Progress">In-Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Fee" class="form-label small fw-bold">Fee (₹)</label>
+                    <input asp-for="Fee" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Symptoms" class="form-label small fw-bold">Symptoms</label>
+                    <textarea asp-for="Symptoms" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label small fw-bold">Notes</label>
+                    <input asp-for="Notes" class="form-control" />
+                </div>
+
+                <div class="mt-4 pt-2 border-top d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

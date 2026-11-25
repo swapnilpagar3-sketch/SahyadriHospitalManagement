@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bgNurse" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#be185d" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#bgNurse)"/>
+  <circle cx="60" cy="45" r="22" fill="#fce7f3"/>
+  <path d="M26 98 C28 72, 42 66, 60 66 C78 66, 92 72, 94 98 Z" fill="#ffffff"/>
+  <!-- Nurse Cap with Cross -->
+  <path d="M46 32 L74 32 L70 20 L50 20 Z" fill="#ffffff"/>
+  <path d="M57 23 L63 23 M60 20 L60 26" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/>
+</svg>
+
